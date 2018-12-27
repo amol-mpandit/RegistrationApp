@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using ENotification;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -16,10 +17,14 @@ namespace RegistrationApp
 {
     public class EmailService : IIdentityMessageService
     {
-        public Task SendAsync(IdentityMessage message)
+        private readonly EnotificationService _eNotification;
+        public EmailService(EnotificationService eNotification)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            _eNotification = eNotification;
+        }
+        public async Task SendAsync(IdentityMessage message)
+        {
+            await _eNotification.SendMessage(message.Destination, message.Subject, message.Body);
         }
     }
 
@@ -35,14 +40,16 @@ namespace RegistrationApp
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        public ApplicationUserManager(IUserStore<ApplicationUser> store)
+        private static  EmailService _emailService;
+        public ApplicationUserManager(IUserStore<ApplicationUser> store, EmailService emailService)
             : base(store)
         {
+            _emailService = emailService;
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()),_emailService);
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
@@ -76,7 +83,7 @@ namespace RegistrationApp
                 Subject = "Security Code",
                 BodyFormat = "Your security code is {0}"
             });
-            manager.EmailService = new EmailService();
+            manager.EmailService = _emailService;
             manager.SmsService = new SmsService();
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
