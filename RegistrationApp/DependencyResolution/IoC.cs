@@ -22,7 +22,7 @@ namespace RegistrationApp.DependencyResolution {
     public static class IoC {
         public static IContainer Initialize() {
             var container = new Container(c => c.AddRegistry<DefaultRegistry>());
-            container.AssertConfigurationIsValid();
+            //container.AssertConfigurationIsValid();
             return container;
         }
     }

@@ -22,6 +22,7 @@ namespace RegistrationApp.DependencyResolution {
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
     using Microsoft.AspNet.Identity.Owin;
+    using Microsoft.Owin;
     using Microsoft.Owin.Security;
     using RegistrationApp.Models;
     using StructureMap.Configuration.DSL;
@@ -50,7 +51,9 @@ namespace RegistrationApp.DependencyResolution {
            
             For<IUserStore<ApplicationUser>>().Use<UserStore<ApplicationUser>>();
             For<DbContext>().Use(() => new ApplicationDbContext());
-            //For<IAuthenticationManager>().Use(() => HttpContext.Current.GetOwinContext().Authentication);
+            For<IAuthenticationManager>().Use(ctx => HttpContext.Current.GetOwinContext().Authentication);
+            //For<IAuthenticationManager>().Use(() =>  GetInstance<IOwinContext>().Authentication.Current.GetOwinContext().Authentication);
+
             //For<ApplicationUserManager>().Use(() => HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>());
             //For<ApplicationSignInManager>().Use(() => HttpContext.Current.GetOwinContext().GetUserManager<ApplicationSignInManager>());
             var networkCredential = new NetworkCredential(
