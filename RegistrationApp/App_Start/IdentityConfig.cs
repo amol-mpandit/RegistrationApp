@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,7 +25,14 @@ namespace RegistrationApp
         }
         public async Task SendAsync(IdentityMessage message)
         {
-            await _eNotification.SendMessage(message.Destination, message.Subject, message.Body);
+            try
+            {
+                await _eNotification.SendMessage(message.Destination, message.Subject, message.Body);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.Message + " SendGrid probably not configured correctly.");
+            }
         }
     }
 

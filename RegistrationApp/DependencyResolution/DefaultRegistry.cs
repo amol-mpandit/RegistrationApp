@@ -15,17 +15,23 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace RegistrationApp.DependencyResolution {
     using ENotification;
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.Identity.Owin;
     using Microsoft.Owin.Security;
     using RegistrationApp.Models;
     using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
     using System.Configuration;
     using System.Data.Entity;
+    using System.IO;
+    using System.Linq;
     using System.Net;
+    using System.Reflection;
     using System.Web;
 
     public class DefaultRegistry : Registry {
@@ -37,17 +43,22 @@ namespace RegistrationApp.DependencyResolution {
                     scan.TheCallingAssembly();
                     scan.WithDefaultConventions();
 					scan.With(new ControllerConvention());
+                    scan.AssembliesFromApplicationBaseDirectory();
+                    scan.AssemblyContainingType<Dll>();
                 });
             //For<IExample>().Use<Example>();
             For<IUserStore<ApplicationUser>>().Use<UserStore<ApplicationUser>>();
             For<DbContext>().Use(() => new ApplicationDbContext());
             For<IAuthenticationManager>().Use(() => HttpContext.Current.GetOwinContext().Authentication);
-
+            For<ApplicationUserManager>().Use(() => HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>());
+            For<ApplicationSignInManager>().Use(() => HttpContext.Current.GetOwinContext().GetUserManager<ApplicationSignInManager>());
             var networkCredential = new NetworkCredential(
                     ConfigurationManager.AppSettings["mailAccount"],
                     ConfigurationManager.AppSettings["mailPassword"]);
             For<NetworkCredential>().Use(networkCredential);
-            For<EnotificationService>().Use(new EnotificationService(networkCredential));
+            var enotificationService = new EnotificationService(networkCredential);
+            For<EnotificationService>().Use(enotificationService);
+            For<EmailService>().Use(() => new EmailService(enotificationService));
         }
 
         #endregion

@@ -18,6 +18,7 @@ namespace ENotification
         public Task SendMessage(string destination, string subject, string body) 
         {
             var message = new SendGridMessage();
+            
             message.AddTo(destination);
             message.From = From;
             message.Subject = subject;
