@@ -45,10 +45,10 @@ namespace RegistrationApp
     {
         
         public ApplicationUserManager(IUserStore<ApplicationUser> store, 
-                                      EmailService emailService) 
+                                      EnotificationService enotificationService) 
             : base(store)
         {
-            EmailService = emailService;
+            EmailService = new EmailService(enotificationService);
             SmsService = new SmsService();
 
             UserValidator = new UserValidator<ApplicationUser>(this)
