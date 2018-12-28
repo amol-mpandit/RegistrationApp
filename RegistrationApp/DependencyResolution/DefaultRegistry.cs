@@ -62,7 +62,7 @@ namespace RegistrationApp.DependencyResolution {
             For<NetworkCredential>().Use(networkCredential);
             var enotificationService = new EnotificationService(networkCredential);
             For<EnotificationService>().Use(enotificationService);
-            For<EmailService>().Use(() => new EmailService(enotificationService));
+            For<IIdentityMessageService>().Use(new EmailService(enotificationService));
         }
 
         #endregion
