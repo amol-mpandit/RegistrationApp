@@ -15,6 +15,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Net;
+
 namespace RegistrationApp.DependencyResolution {
     using System;
     using System.Collections.Generic;
@@ -24,7 +26,9 @@ namespace RegistrationApp.DependencyResolution {
     using Microsoft.Practices.ServiceLocation;
 
     using StructureMap;
-	
+    using Microsoft.Owin.Security;
+    using Microsoft.Owin;
+
     /// <summary>
     /// The structure map dependency scope.
     /// </summary>
@@ -66,7 +70,17 @@ namespace RegistrationApp.DependencyResolution {
         private HttpContextBase HttpContext {
             get {
                 var ctx = Container.TryGetInstance<HttpContextBase>();
-                return ctx ?? new HttpContextWrapper(System.Web.HttpContext.Current);
+                var context =  ctx ?? new HttpContextWrapper(System.Web.HttpContext.Current);
+                if (context != null && context.Items["owin.Environment"] == null) 
+                {
+                    Container.Configure(c=>c.For<IAuthenticationManager>().Use(new OwinContext().Authentication));
+                }
+                else
+                {
+                    Container.Configure(c => c.For<IAuthenticationManager>().Use(context.GetOwinContext().Authentication));
+                }
+
+                return context;
             }
         }
 

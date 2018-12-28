@@ -48,14 +48,9 @@ namespace RegistrationApp.DependencyResolution {
                     scan.AssemblyContainingType<Dll>();
                 });
             //For<IExample>().Use<Example>();
-           
             For<IUserStore<ApplicationUser>>().Use<UserStore<ApplicationUser>>();
             For<DbContext>().Use(() => new ApplicationDbContext());
             For<IAuthenticationManager>().Use(ctx => HttpContext.Current.GetOwinContext().Authentication);
-            //For<IAuthenticationManager>().Use(() =>  GetInstance<IOwinContext>().Authentication.Current.GetOwinContext().Authentication);
-
-            //For<ApplicationUserManager>().Use(() => HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>());
-            //For<ApplicationSignInManager>().Use(() => HttpContext.Current.GetOwinContext().GetUserManager<ApplicationSignInManager>());
             var networkCredential = new NetworkCredential(
                     ConfigurationManager.AppSettings["mailAccount"],
                     ConfigurationManager.AppSettings["mailPassword"]);

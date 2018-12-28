@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 using RegistrationApp.Models;
 
 namespace RegistrationApp
@@ -51,8 +52,7 @@ namespace RegistrationApp
         private static EmailService _emailService;
         public ApplicationUserManager(IUserStore<ApplicationUser> store, 
                                       EmailService emailService,
-                                      SmsService smsService,
-                                      IdentityFactoryOptions<ApplicationUserManager> options)
+                                      SmsService smsService)
             : base(store)
         {
             _emailService = emailService;
@@ -84,12 +84,9 @@ namespace RegistrationApp
                 Subject = "Security Code",
                 BodyFormat = "Your security code is {0}"
             });
-            var dataProtectionProvider = options.DataProtectionProvider;
-            if (dataProtectionProvider != null)
-            {
-                UserTokenProvider =
-                    new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
-            }
+            
+            var provider = new DpapiDataProtectionProvider("ASP.NET Identity Provider");
+            UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(provider.Create("ASP.NET Identity"));
         }
 
         //public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
