@@ -17,6 +17,7 @@
 
 namespace RegistrationApp.DependencyResolution {
     using ENotification;
+    using SendGrid;
     using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
     
@@ -34,13 +35,6 @@ namespace RegistrationApp.DependencyResolution {
                     scan.AssemblyContainingType<Dll>();
                 });
             //For<IExample>().Use<Example>();
-            
-            //For<ApplicationSignInManager>().Use(HttpContext.Current.GetOwinContext().Get<ApplicationSignInManager>());
-            //For<ApplicationUserManager>().Use(ctx => HttpContext.Current.GetOwinContext().Get<ApplicationUserManager>());
-            
-            //var enotificationService = new EnotificationService(networkCredential);
-            //For<EnotificationService>().Use(enotificationService);
-            //For<IIdentityMessageService>().Use(new EmailService(enotificationService));
         }
 
         #endregion

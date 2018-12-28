@@ -7,16 +7,20 @@ namespace ENotification
 {
     public class ENotificationService : IENotificationService
     {
-        public readonly Web _web;
+        public readonly ITransport _web;
         public readonly MailAddress From;
-        public ENotificationService(NetworkCredential networkCredential)
+        public ENotificationService(ITransport transport)
         {
-            _web = new Web(networkCredential);
+            _web = transport;
             From = new MailAddress("Admin@UserService.com", "Admin User");
         }
 
         public Task SendMessage(string destination, string subject, string body) 
         {
+            if(string.IsNullOrEmpty(destination) || string.IsNullOrEmpty(body))
+            {
+                return Task.FromResult(0);
+            }
             var message = new SendGridMessage();
             
             message.AddTo(destination);

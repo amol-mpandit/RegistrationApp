@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using RegistrationApp.Models;
+using SendGrid;
 using StructureMap.Configuration.DSL;
 using System.Configuration;
 using System.Data.Entity;
@@ -22,6 +23,7 @@ namespace RegistrationApp.DependencyResolution
                     ConfigurationManager.AppSettings["mailAccount"],
                     ConfigurationManager.AppSettings["mailPassword"]);
             For<NetworkCredential>().Use(networkCredential);
+            For<ITransport>().Use<Web>(); // .Ctor<NetworkCredential>().Is(networkCredential);
         }
     }
 }

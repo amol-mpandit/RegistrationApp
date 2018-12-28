@@ -7,30 +7,75 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using Microsoft.AspNet.Identity;
 using RegistrationApp.Models;
 using ENotification;
+using System.Threading;
+using StructureMap;
+using NUnit.Framework;
 
 namespace RegistrationApp.Tests.EnotificationTest
 {
     [TestClass]
     public class EnotificationTest
     {
-        [TestMethod]
-        public void EmailTest()
+        private readonly IContainer _container;
+        private readonly EmailService _emailService;
+        private readonly FakeWeb fakeWebMail;
+        public EnotificationTest()
         {
-            var container = TestBootstrapper.Bootstrapper();
-            var user = new RegisterViewModel
-            {
-                Email = "abc@abc.com"
-            };
-            
-            var mailService = container.GetInstance<EmailService>();
-            var fakeWebMail = container.GetInstance<EnotificationMock>();
+            _container = TestBootstrapper.Bootstrapper();
+            _emailService = _container.GetInstance<EmailService>();
+            fakeWebMail = _container.GetInstance<FakeWeb>();
+        }
+
+        [TestMethod]
+        public void Normal_EmailTest()
+        {
             var fakeMessage = new IdentityMessage
             {
-                Destination = "abc@abc.com"
+                Destination = "Test@Test.com",
+                Body = "Test Body"
             };
+            var ExpectedResult = "Test@Test.com";
+            var task = _emailService.SendAsync(fakeMessage);
+            Assert.AreEqual(ExpectedResult, fakeWebMail.GetLastMessageDeliverdTo());
+        }
 
-            var task = mailService.SendAsync(fakeMessage);
-            Assert.AreEqual(fakeMessage.Destination, fakeWebMail.GetLastMessageDeliverdTo());
+        [TestMethod]
+        public void Empty_Destination_Body_EmailTest()
+        {
+            var fakeMessage = new IdentityMessage
+            {
+                Destination = "",
+                Body = ""
+            };
+            var ExpectedResult = "";
+            var task = _emailService.SendAsync(fakeMessage);
+            Assert.AreEqual(ExpectedResult, fakeWebMail.GetLastMessageDeliverdTo());
+        }
+
+        [TestMethod]
+        public void Empty_Destination_EmailTest()
+        {
+            var fakeMessage = new IdentityMessage
+            {
+                Destination = "",
+                Body = "Test Body"
+            };
+            var ExpectedResult = "";
+            var task = _emailService.SendAsync(fakeMessage);
+            Assert.AreEqual(ExpectedResult, fakeWebMail.GetLastMessageDeliverdTo());
+        }
+
+        [TestMethod]
+        public void Empty_Body_EmailTest()
+        {
+            var fakeMessage = new IdentityMessage
+            {
+                Destination = "Test@Test.com",
+                Body = ""
+            };
+            var ExpectedResult = "";
+            var task = _emailService.SendAsync(fakeMessage);
+            Assert.AreEqual(ExpectedResult, fakeWebMail.GetLastMessageDeliverdTo());
         }
     }
 }
