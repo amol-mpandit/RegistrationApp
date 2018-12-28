@@ -16,6 +16,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Net;
+using Microsoft.AspNet.Identity.Owin;
+using RegistrationApp.Models;
 
 namespace RegistrationApp.DependencyResolution {
     using System;
