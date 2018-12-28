@@ -15,25 +15,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace RegistrationApp.DependencyResolution {
     using ENotification;
-    using Microsoft.AspNet.Identity;
-    using Microsoft.AspNet.Identity.EntityFramework;
-    using Microsoft.AspNet.Identity.Owin;
-    using Microsoft.Owin;
-    using Microsoft.Owin.Security;
-    using RegistrationApp.Models;
     using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
-    using System.Configuration;
-    using System.Data.Entity;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Reflection;
-    using System.Web;
+    
 
     public class DefaultRegistry : Registry {
         #region Constructors and Destructors
@@ -48,16 +34,13 @@ namespace RegistrationApp.DependencyResolution {
                     scan.AssemblyContainingType<Dll>();
                 });
             //For<IExample>().Use<Example>();
-            For<IUserStore<ApplicationUser>>().Use<UserStore<ApplicationUser>>();
-            For<DbContext>().Use(() => new ApplicationDbContext());
-            For<IAuthenticationManager>().Use(ctx => HttpContext.Current.GetOwinContext().Authentication);
-            var networkCredential = new NetworkCredential(
-                    ConfigurationManager.AppSettings["mailAccount"],
-                    ConfigurationManager.AppSettings["mailPassword"]);
-            For<NetworkCredential>().Use(networkCredential);
-            var enotificationService = new EnotificationService(networkCredential);
-            For<EnotificationService>().Use(enotificationService);
-            For<IIdentityMessageService>().Use(new EmailService(enotificationService));
+            
+            //For<ApplicationSignInManager>().Use(HttpContext.Current.GetOwinContext().Get<ApplicationSignInManager>());
+            //For<ApplicationUserManager>().Use(ctx => HttpContext.Current.GetOwinContext().Get<ApplicationUserManager>());
+            
+            //var enotificationService = new EnotificationService(networkCredential);
+            //For<EnotificationService>().Use(enotificationService);
+            //For<IIdentityMessageService>().Use(new EmailService(enotificationService));
         }
 
         #endregion

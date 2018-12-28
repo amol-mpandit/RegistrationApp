@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using ENotification;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataProtection;
 using RegistrationApp.Models;
@@ -49,16 +43,14 @@ namespace RegistrationApp
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        private static EmailService _emailService;
+        
         public ApplicationUserManager(IUserStore<ApplicationUser> store, 
-                                      EmailService emailService,
-                                      SmsService smsService)
+                                      EmailService emailService) 
             : base(store)
         {
-            _emailService = emailService;
-            Store = store;
             EmailService = emailService;
-            SmsService = smsService;
+            SmsService = new SmsService();
+
             UserValidator = new UserValidator<ApplicationUser>(this)
             {
                 AllowOnlyAlphanumericUserNames = false,
@@ -84,10 +76,14 @@ namespace RegistrationApp
                 Subject = "Security Code",
                 BodyFormat = "Your security code is {0}"
             });
-            
-            var provider = new DpapiDataProtectionProvider("ASP.NET Identity Provider");
-            UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(provider.Create("ASP.NET Identity"));
 
+            var dataProtectionProvider = Startup.DataProtectionProvider;
+            if (dataProtectionProvider != null)
+            {
+                IDataProtector dataProtector = dataProtectionProvider.Create("ASP.NET Identity");
+
+                UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(dataProtector);
+            }
         }
     }
 

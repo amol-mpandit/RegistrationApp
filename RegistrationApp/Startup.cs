@@ -6,9 +6,9 @@ namespace RegistrationApp
 {
     public partial class Startup
     {
-        public void Configuration(IAppBuilder app, ApplicationUserManager applicationUserManager, ApplicationSignInManager applicationSignInManager)
+        public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app, applicationUserManager, applicationSignInManager);
+            ConfigureAuth(app);
         }
     }
 }

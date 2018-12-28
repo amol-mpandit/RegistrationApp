@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -9,20 +6,23 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using RegistrationApp.Models;
-using StructureMap;
 
 namespace RegistrationApp.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        public ApplicationSignInManager SignInManager;
-        public ApplicationUserManager UserManager;
-
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        private readonly ApplicationSignInManager SignInManager;
+        private readonly ApplicationUserManager UserManager;
+        private readonly IAuthenticationManager AuthenticationManager;
+        
+        public AccountController(ApplicationUserManager userManager, 
+                                 ApplicationSignInManager signInManager,
+                                 IAuthenticationManager authenticationManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            AuthenticationManager = authenticationManager;
         }
         
         //
@@ -397,13 +397,13 @@ namespace RegistrationApp.Controllers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
+        //private IAuthenticationManager AuthenticationManager
+        //{
+        //    get
+        //    {
+        //        return HttpContext.GetOwinContext().Authentication;
+        //    }
+        //}
 
         private void AddErrors(IdentityResult result)
         {
