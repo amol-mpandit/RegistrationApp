@@ -87,6 +87,7 @@ namespace RegistrationApp
             
             var provider = new DpapiDataProtectionProvider("ASP.NET Identity Provider");
             UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(provider.Create("ASP.NET Identity"));
+
         }
     }
 
