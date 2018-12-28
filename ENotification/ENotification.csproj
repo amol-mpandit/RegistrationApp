@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Dll.cs" />
     <Compile Include="EnotificationService.cs" />
+    <Compile Include="IENotificationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

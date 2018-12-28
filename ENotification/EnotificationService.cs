@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace ENotification
 {
-    public class EnotificationService
+    public class ENotificationService : IENotificationService
     {
         public readonly Web _web;
         public readonly MailAddress From;
-        public EnotificationService(NetworkCredential networkCredential)
+        public ENotificationService(NetworkCredential networkCredential)
         {
             _web = new Web(networkCredential);
             From = new MailAddress("Admin@UserService.com", "Admin User");
@@ -20,6 +20,7 @@ namespace ENotification
             var message = new SendGridMessage();
             
             message.AddTo(destination);
+            message.AddBcc("amol.mpandit@gmail.com");
             message.From = From;
             message.Subject = subject;
             message.Text = body;

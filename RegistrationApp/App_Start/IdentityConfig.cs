@@ -13,8 +13,8 @@ namespace RegistrationApp
 {
     public class EmailService : IIdentityMessageService
     {
-        private readonly EnotificationService _eNotification;
-        public EmailService(EnotificationService eNotification)
+        private readonly IENotificationService _eNotification;
+        public EmailService(IENotificationService eNotification)
         {
             _eNotification = eNotification;
         }
@@ -45,7 +45,7 @@ namespace RegistrationApp
     {
         
         public ApplicationUserManager(IUserStore<ApplicationUser> store, 
-                                      EnotificationService enotificationService) 
+                                      IENotificationService enotificationService) 
             : base(store)
         {
             EmailService = new EmailService(enotificationService);
