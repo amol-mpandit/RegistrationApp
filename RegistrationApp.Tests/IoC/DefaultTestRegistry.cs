@@ -1,5 +1,4 @@
-﻿using ENotification;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Moq;
 using RegistrationApp.Models;
 using RegistrationApp.Tests.EnotificationTest;

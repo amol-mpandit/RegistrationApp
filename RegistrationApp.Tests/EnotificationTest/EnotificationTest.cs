@@ -1,15 +1,9 @@
-﻿using Moq;
-using RegistrationApp.Controllers;
-using RegistrationApp.Tests.IoC;
-
+﻿using RegistrationApp.Tests.IoC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 using Microsoft.AspNet.Identity;
-using RegistrationApp.Models;
-using ENotification;
-using System.Threading;
 using StructureMap;
-using NUnit.Framework;
+
 
 namespace RegistrationApp.Tests.EnotificationTest
 {

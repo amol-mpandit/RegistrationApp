@@ -23,7 +23,7 @@ namespace RegistrationApp.DependencyResolution
                     ConfigurationManager.AppSettings["mailAccount"],
                     ConfigurationManager.AppSettings["mailPassword"]);
             For<NetworkCredential>().Use(networkCredential);
-            For<ITransport>().Use<Web>(); // .Ctor<NetworkCredential>().Is(networkCredential);
+            For<ITransport>().Use(new Web(networkCredential));
         }
     }
 }
